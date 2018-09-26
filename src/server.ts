@@ -11,7 +11,7 @@ import { ApiJsonController } from "./controller/apijson.controller";
 const app = createKoaServer({
     controllers: [UserController, ApiJsonController] // we specify controllers we want to use
 });
-
+ 
 // run express application on port 3000
 // app.listen(3000);
 const databaseInitializer = async () => createConnection().then(async connection => {
