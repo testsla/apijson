@@ -3,17 +3,55 @@ import { Observable, of, from } from 'rxjs'
 import { map } from 'rxjs/operators';
 import { async } from 'rxjs/internal/scheduler/async';
 import { User } from '../entity/User';
+const COLUMN = '@column'
+const ORDER = '@order'
+
+const GetColumn = (where: any) => {
+    let result = where[COLUMN]
+    if (result) {
+        result = result.split(',')
+        Reflect.deleteProperty(where, COLUMN)
+        return result
+    } else {
+        return null
+    }
+}
+const GetOrder = (where: any) => {
+    let result = where[ORDER]
+    if (result) {
+        result = result.split(',')
+        Reflect.deleteProperty(where, ORDER)
+        let _result = {}
+        for (let item of result) {
+            if (item.endsWith('+')) {
+                _result[item.replace('+', '')] = 'ASC'
+            } else if (item.endsWith('-')) {
+                _result[item.replace('-', '')] = 'DESC'
+            } else {
+                _result[item] = 'ASC'
+            }
+        }
+        return _result
+    } else {
+        return null
+    }
+
+}
 const GetTableData = async (tableName: string, page: number = 0, count: number = 1, where: any = {}) => {
     let repository: Repository<any>
     let result
     try {
         repository = getRepository(tableName)
+        let select = GetColumn(where)
+        let order = GetOrder(where)
         result = await repository.find({
             where: {
                 ...where
             },
             take: page,
             skip: page * count,
+            select,
+            order,
         })
     } catch (error) {
 
@@ -25,10 +63,12 @@ const GetFirstData = async (tableName: string, where: any = {}) => {
     let result
     try {
         repository = getRepository(tableName)
+        let select = GetColumn(where)
         result = await repository.findOne({
             where: {
                 ...where
-            }
+            },
+            select
         })
     } catch (error) {
 
@@ -57,9 +97,9 @@ const A = async (apijson: Object, isArray = false) => {
             if (tables.length) {
                 let tableName = tables[0]
                 let temp = await GetTableData(tableName, page, count, where[0])
-                temp = temp.map(item => ({
+                temp = temp ? temp.map(item => ({
                     [tableName]: item
-                }))
+                })) : []
                 for (let _temp of temp) {
                     for (let i = 1; i < tables.length; i++) {
                         let tableName: string = tables[i]
