@@ -2,6 +2,8 @@ import { Controller, Param, Body, Get, Post, Put, Delete } from "routing-control
 import { getRepository } from "typeorm";
 import { User } from "../entity/User";
 import { Message } from "../entity/Message";
+const MockJs = require('mockjs');
+const story = require('./txt');
 
 function getRandom(n: number) {
     return Math.floor(Math.random() * n)
@@ -13,20 +15,17 @@ export class UserController {
     @Get("/users")
     async getAll() {
         const user = new User();
-        user.firstName = "Timber";
-        user.lastName = "Saw";
-        user.age = Math.floor(Math.random() * 1000);
-        debugger
-        try {
-            // await respoitory.save(user)
-            let result = await user.save();
-            let msg = new Message;
-            msg.userId = result.id;
-            msg.content = '史丹佛哈是东方红'.slice(getRandom(100), getRandom(100))
-            await msg.save();
-        } catch (error) {
-            console.log(error)
-        }
+        const msg = new Message();
+        user.firstName = MockJs.Random.first();
+        user.lastName = MockJs.Random.last();
+        user.cName = MockJs.Random.cname();
+        user.age = getRandom(100);
+        user.sex = getRandom(100) > 50 ? 0 : 1;
+        const _user = await user.save();
+        msg.userId = _user.id;
+        const start = getRandom(1000)
+        msg.content = story.split(start, start + 200);
+        await msg.save()
         return "This action returns all users";
     }
 
