@@ -18,13 +18,13 @@ export class UserController {
         const msg = new Message();
         user.firstName = MockJs.Random.first();
         user.lastName = MockJs.Random.last();
-        user.cName = MockJs.Random.cname();
-        user.age = getRandom(100);
+        user.cName = MockJs.Random.cname() + MockJs.Random.cfirst();
+        user.age = getRandom(60);
         user.sex = getRandom(100) > 50 ? 0 : 1;
         const _user = await user.save();
         msg.userId = _user.id;
-        const start = getRandom(1000)
-        msg.content = story.split(start, start + 200);
+        const start = getRandom(5000)
+        msg.content = story.slice(start, start + 200);
         await msg.save()
         return "This action returns all users";
     }

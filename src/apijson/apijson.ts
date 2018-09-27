@@ -79,9 +79,5 @@ const A = async (apijson: Object, isArray = false) => {
     return result
 }
 export const ApiJson = async (APIJSON) => {
-    // return await User.find({
-    //     take: 5,
-    //     skip: 1
-    // })
     return await A(APIJSON)
 }
