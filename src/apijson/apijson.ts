@@ -64,8 +64,8 @@ const A = async (apijson: Object, isArray = false) => {
                     for (let i = 1; i < tables.length; i++) {
                         let tableName: string = tables[i]
                         if (tableName.endsWith('[]')) {
-                            tableName = tableName.split('[]')[0]
-                            _temp[tableName] = await GetTableData(tableName, page, count, where[i])
+                            const _tableName = tableName.split('[]')[0]
+                            _temp[tableName] = await GetTableData(_tableName, page, count, where[i])
                         } else {
                             _temp[tableName] = await GetFirstData(tableName, where[i])
                         }

@@ -23,7 +23,7 @@ export class UserController {
         user.sex = getRandom(100) > 50 ? 0 : 1;
         const _user = await user.save();
         msg.userId = _user.id;
-        const start = getRandom(5000)
+        const start = getRandom(story.length - 200)
         msg.content = story.slice(start, start + 200);
         await msg.save()
         return "This action returns all users";
