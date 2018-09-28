@@ -2,6 +2,7 @@ import { Controller, Param, Body, Get, Post, Put, Delete } from "routing-control
 import { getRepository } from "typeorm";
 import { User } from "../entity/User";
 import { Message } from "../entity/Message";
+import { UserService } from "../service/user.service";
 const MockJs = require('mockjs');
 const story = require('./txt');
 
@@ -11,6 +12,9 @@ function getRandom(n: number) {
 
 @Controller()
 export class UserController {
+    constructor(
+        private userSrv: UserService
+    ) { }
 
     @Get("/users")
     async getAll() {
@@ -23,9 +27,10 @@ export class UserController {
         user.sex = getRandom(100) > 50 ? 0 : 1;
         const _user = await user.save();
         msg.userId = _user.id;
-        const start = getRandom(story.length - 200)
+        const start = getRandom(story.length - 200);
         msg.content = story.slice(start, start + 200);
         await msg.save()
+        this.userSrv.test()
         return "This action returns all users";
     }
 

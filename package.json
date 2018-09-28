@@ -21,6 +21,7 @@
       "routing-controllers": "^0.7.7",
       "rxjs": "^6.3.2",
       "tsconfig-paths": "^3.6.0",
+      "typedi": "^0.8.0",
       "typeorm": "0.2.7"
    },
    "scripts": {
