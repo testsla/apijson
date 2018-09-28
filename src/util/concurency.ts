@@ -24,4 +24,4 @@ let mapLimit = (list: Array<any>, limit: number, asyncHandle: (data: any) => Pro
     return Promise.all(asyncList);
     // 所有并发异步操作都完成后，本次并发控制迭代完成
 }
-module.exports = mapLimit;
+export { mapLimit };
