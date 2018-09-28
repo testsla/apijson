@@ -11,6 +11,8 @@
       "@types/koa": "^2.0.46",
       "@types/koa-bodyparser": "^5.0.1",
       "@types/koa-router": "^7.0.31",
+      "class-transformer": "^0.1.9",
+      "class-validator": "^0.9.1",
       "koa": "^2.5.3",
       "koa-bodyparser": "^4.2.1",
       "koa-multer": "^1.0.2",

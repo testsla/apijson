@@ -12,6 +12,7 @@ import {Container} from "typedi";
 
 routingUseContainer(Container);
 ormUseContainer(Container);
+
 // creates express app, registers all controller routes and returns you express app instance
 const app = createKoaServer({
     controllers: [UserController, ApiJsonController] // we specify controllers we want to use

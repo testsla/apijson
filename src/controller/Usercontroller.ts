@@ -3,12 +3,10 @@ import { getRepository } from "typeorm";
 import { User } from "../entity/User";
 import { Message } from "../entity/Message";
 import { UserService } from "../service/user.service";
+import { getRandom } from "../util";
 const MockJs = require('mockjs');
 const story = require('./txt');
 
-function getRandom(n: number) {
-    return Math.floor(Math.random() * n)
-}
 
 @Controller()
 export class UserController {
