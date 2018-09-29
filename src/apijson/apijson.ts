@@ -38,6 +38,7 @@ const GetOrder = (where: any) => {
     }
 }
 const GetRelation = (where: any, thisItem: any) => {
+    let result = {};
     if (!thisItem) {
         return
     }
@@ -53,12 +54,13 @@ const GetRelation = (where: any, thisItem: any) => {
                         }
                         _id = _id[_prop]
                     }
-                    where[prop.replace('@', '')] = _id;
+                    result[prop.replace('@', '')] = _id;
                 }
             }
-            Reflect.deleteProperty(where, prop)
+            // Reflect.deleteProperty(where, prop)  [BUG]
         }
     }
+    return result
 }
 const GetRelations = (where: { [key: string]: any }) => {
     let result = where[RELATION]
@@ -91,7 +93,8 @@ const GetTableData = async (tableName: string, page: number = 0, count: number =
         // console.log(where)
         result = await repository.find({
             where: {
-                ...where
+                ...where,
+                ...relation,
             },
             take: page,
             skip: page * count,
@@ -111,12 +114,13 @@ const GetFirstData = async (tableName: string, where: any = {}, thisItem?: any) 
     try {
         repository = getRepository(tableName)
         let select = GetColumn(where)
-        let _relation = GetRelation(where, thisItem)
+        let relation = GetRelation(where, thisItem)
         let relations = GetRelations(where)
         let loadRelationIds = relations ? null : { disableMixedMap: false }
         result = await repository.findOne({
             where: {
-                ...where
+                ...where,
+                ...relation
             },
             select,
             loadRelationIds,
