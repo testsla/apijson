@@ -5,6 +5,7 @@ import { async } from 'rxjs/internal/scheduler/async';
 import { User } from '../entity/User';
 const COLUMN = '@column'
 const ORDER = '@order'
+const RELATION = '@relation'
 
 const GetColumn = (where: any) => {
     let result = where[COLUMN]
@@ -49,7 +50,7 @@ const GetRelation = (where: any, thisItem: any) => {
                     for (let _prop of arr) {
                         if (_prop.endsWith('Id')) {
                             _prop = _prop.replace('Id', '')
-                        } 
+                        }
                         _id = _id[_prop]
                     }
                     where[prop.replace('@', '')] = _id;
@@ -57,6 +58,16 @@ const GetRelation = (where: any, thisItem: any) => {
             }
             Reflect.deleteProperty(where, prop)
         }
+    }
+}
+const GetRelations = (where: { [key: string]: any }) => {
+    let result = where[RELATION]
+    if (result) {
+        result = result.map(item => item.toLowerCase())
+        Reflect.deleteProperty(where, RELATION)
+        return result
+    } else {
+        return null
     }
 }
 /**
@@ -75,6 +86,8 @@ const GetTableData = async (tableName: string, page: number = 0, count: number =
         let select = GetColumn(where)
         let order = GetOrder(where)
         let relation = GetRelation(where, thisItem)
+        let relations = GetRelations(where)
+        let loadRelationIds = relations ? null : { disableMixedMap: false }
         // console.log(where)
         result = await repository.find({
             where: {
@@ -84,9 +97,8 @@ const GetTableData = async (tableName: string, page: number = 0, count: number =
             skip: page * count,
             select,
             order,
-            loadRelationIds: {
-                disableMixedMap: false
-            }
+            loadRelationIds,
+            relations
         })
     } catch (error) {
 
@@ -99,15 +111,16 @@ const GetFirstData = async (tableName: string, where: any = {}, thisItem?: any) 
     try {
         repository = getRepository(tableName)
         let select = GetColumn(where)
-        let relation = GetRelation(where, thisItem)
+        let _relation = GetRelation(where, thisItem)
+        let relations = GetRelations(where)
+        let loadRelationIds = relations ? null : { disableMixedMap: false }
         result = await repository.findOne({
             where: {
                 ...where
             },
             select,
-            loadRelationIds: {
-                disableMixedMap: false
-            }
+            loadRelationIds,
+            relations
         })
     } catch (error) {
 

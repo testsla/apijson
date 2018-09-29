@@ -18,17 +18,17 @@ export class UserController {
     async getAll() {
         // init
         const user = new User();
-        const msg = new Message();
+        const msg = this.userSrv.createMsg();
         user.firstName = MockJs.Random.first();
         user.lastName = MockJs.Random.last();
         user.cName = MockJs.Random.cname() + MockJs.Random.cfirst();
         user.age = getRandom(60);
         user.sex = getRandom(100) > 50 ? 0 : 1
-        const start = getRandom(story.length - 200);
-        msg.content = story.slice(start, start + 200);
         // save
         await msg.save();
-        user.message = [msg]
+        let _msg = this.userSrv.createMsg()
+        await _msg.save()
+        user.message = [msg, _msg]
         await user.save()
         return "Success";
     }
@@ -54,11 +54,10 @@ export class UserController {
     }
     @Get('/test/:id')
     async test(@Param('id') id) {
-        return await Message.find({
-            where: { user: id },
-            loadRelationIds:{
-                disableMixedMap:true
-            }
+        return await User.find({
+            where: { id: id },
+            loadRelationIds: true,
+            relations:['message']
         })
     }
 

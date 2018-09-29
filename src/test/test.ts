@@ -24,3 +24,13 @@ let test_3 = {
 
     }
 }
+// 一对多 ，多对一
+let test_4 = {
+    "[]":{   	
+    	"User":{
+    		"id":8,
+    		"@relation":["Message"]
+    	}
+
+    }
+}
