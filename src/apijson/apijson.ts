@@ -35,15 +35,47 @@ const GetOrder = (where: any) => {
     } else {
         return null
     }
-
 }
-const GetTableData = async (tableName: string, page: number = 0, count: number = 1, where: any = {}) => {
+const GetRelation = (where: any, thisItem: any) => {
+    if (!thisItem) {
+        return
+    }
+    for (let prop in where) {
+        if (prop.endsWith('@')) {
+            if (where[prop].startsWith('/')) {
+                let arr = where[prop].split('/').filter(item => item)
+                if (arr && arr.length) {
+                    let _id = Object.assign({}, thisItem);
+                    for (let _prop of arr) {
+                        if (_prop.endsWith('Id')) {
+                            _prop = _prop.replace('Id', '')
+                        } 
+                        _id = _id[_prop]
+                    }
+                    where[prop.replace('@', '')] = _id;
+                }
+            }
+            Reflect.deleteProperty(where, prop)
+        }
+    }
+}
+/**
+ * 
+ * @param tableName 
+ * @param page 
+ * @param count 
+ * @param where 
+ * @param thisItem 该数据所在的json{}
+ */
+const GetTableData = async (tableName: string, page: number = 0, count: number = 1, where: any = {}, thisItem?: any) => {
     let repository: Repository<any>
     let result
     try {
         repository = getRepository(tableName)
         let select = GetColumn(where)
         let order = GetOrder(where)
+        let relation = GetRelation(where, thisItem)
+        // console.log(where)
         result = await repository.find({
             where: {
                 ...where
@@ -52,23 +84,30 @@ const GetTableData = async (tableName: string, page: number = 0, count: number =
             skip: page * count,
             select,
             order,
+            loadRelationIds: {
+                disableMixedMap: false
+            }
         })
     } catch (error) {
 
     }
     return result;
 }
-const GetFirstData = async (tableName: string, where: any = {}) => {
+const GetFirstData = async (tableName: string, where: any = {}, thisItem?: any) => {
     let repository: Repository<any>
     let result
     try {
         repository = getRepository(tableName)
         let select = GetColumn(where)
+        let relation = GetRelation(where, thisItem)
         result = await repository.findOne({
             where: {
                 ...where
             },
-            select
+            select,
+            loadRelationIds: {
+                disableMixedMap: false
+            }
         })
     } catch (error) {
 
@@ -105,9 +144,9 @@ const A = async (apijson: Object, isArray = false) => {
                         let tableName: string = tables[i]
                         if (tableName.endsWith('[]')) {
                             const _tableName = tableName.split('[]')[0]
-                            _temp[tableName] = await GetTableData(_tableName, page, count, where[i])
+                            _temp[tableName] = await GetTableData(_tableName, page, count, where[i], _temp)
                         } else {
-                            _temp[tableName] = await GetFirstData(tableName, where[i])
+                            _temp[tableName] = await GetFirstData(tableName, where[i], _temp)
                         }
                     }
                 }

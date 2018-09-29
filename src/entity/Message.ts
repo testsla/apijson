@@ -1,10 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne, JoinColumn } from "typeorm";
+import { User } from "./User";
 @Entity()
 export class Message extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
-    @Column()
-    userId: number;
-    @Column()
+    @Column({
+        comment:'用户内容'
+    })
     content: string;
+
+    @ManyToOne(type => User, user => user.message)
+    user: User;
 }
