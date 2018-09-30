@@ -1,11 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany, CreateDateColumn } from "typeorm";
 import { validate, Contains, IsInt, Length, IsEmail, IsFQDN, IsDate, Min, Max, IsString, IsIn, IsEnum } from "class-validator";
 import { Message } from "./Message";
 @Entity()
 export class User extends BaseEntity {
     @IsInt()
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id: number;
+
+    @CreateDateColumn()
+    created:Date;
 
     @IsString()
     @Column({

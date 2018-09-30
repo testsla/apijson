@@ -1,10 +1,10 @@
 {
    "type": "mysql",
-   "host": "localhost",
+   "host": "47.91.228.137",
    "port": 3306,
    "username": "root",
    "password": "root",
-   "database": "apijson",
+   "database": "test",
    "synchronize": true,
    "logging": false,
    "entities": [
