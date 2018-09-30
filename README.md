@@ -1,5 +1,5 @@
 # APIJSON.NODE-TS
-![](https://img.shields.io/badge/mysql-^2.14.1-brightgreen.svg)
+![](https://img.shields.io/badge/mysql-8.0.0-brightgreen.svg)
 [![](https://img.shields.io/badge/rxjs-^2.14.1-brightgreen.svg)](https://rxjs-dev.firebaseapp.com/)
 [![](https://img.shields.io/badge/typeorm-0.2.7-brightgreen.svg)](http://typeorm.io/#/)
 [![](https://img.shields.io/badge/routing_controllers-^0.7.7-brightgreen.svg)](https://github.com/typestack/routing-controllers)

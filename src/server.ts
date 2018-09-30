@@ -1,8 +1,6 @@
-import "reflect-metadata";
-import { createConnection, getRepository } from "typeorm";
-import { User } from "./entity/User";
-
 import "reflect-metadata"; // this shim is required
+require('dotenv').config()
+import { createConnection, getRepository } from "typeorm";
 import { createKoaServer } from "routing-controllers";
 import { UserController } from "./controller/UserController";
 import { ApiJsonController } from "./controller/apijson.controller";
@@ -26,8 +24,8 @@ const databaseInitializer = async () => createConnection().then(async connection
 
 const bootstrap = async () => {
     await databaseInitializer();
-    app.listen(3001, async () => {
-        console.log('服务运行3001')
+    app.listen(process.env.PORT, async () => {
+        console.log(`服务运行${process.env.PORT}`)
     })
 }
 bootstrap();

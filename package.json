@@ -2,7 +2,8 @@
    "name": "shortcut",
    "version": "0.0.1",
    "description": "Awesome project developed with TypeORM.",
-   "devDependencies": { 
+   "devDependencies": {
+      "@types/dotenv": "^4.0.3",
       "@types/node": "^8.0.29",
       "ts-node": "^7.0.1",
       "typescript": "2.5.2"
@@ -13,6 +14,7 @@
       "@types/koa-router": "^7.0.31",
       "class-transformer": "^0.1.9",
       "class-validator": "^0.9.1",
+      "dotenv": "^6.0.0",
       "koa": "^2.5.3",
       "koa-bodyparser": "^4.2.1",
       "koa-multer": "^1.0.2",
