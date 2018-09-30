@@ -40,7 +40,7 @@ const GetOrder = (where: any) => {
 const GetRelation = (where: any, thisItem: any) => {
     let result = {};
     if (!thisItem) {
-        return
+        return 
     }
     for (let prop in where) {
         if (prop.endsWith('@')) {
