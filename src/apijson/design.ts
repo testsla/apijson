@@ -37,11 +37,11 @@ const test_01 = {
     `,
     output:[
         { type:"name" , value:"User" },
-        { type:"paren" , value:"{" },
+        { type:"braces" , value:"{" },
         { type:"name" , value:"id" },
         { type:"comma" , value:"," },
         { type:"name" , value:"name" },
-        { type:"paren" , value:"}" },
+        { type:"braces" , value:"}" },
     ]
 }
 
