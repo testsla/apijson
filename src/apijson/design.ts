@@ -1,4 +1,8 @@
 import { CONSTANT } from './const';
+import { User } from '../entity/User';
+import { async } from 'rxjs/internal/scheduler/async';
+import { getRepository } from 'typeorm';
+declare let format;
 const design = `
     [] ($count:10, $page:1):UserInfoList {
         User() {
@@ -16,7 +20,7 @@ const design = `
     }
     []:SuperUser {
         User {
-            name
+            name,
             id { &:[12,15,32] }
         }
         Message ( userId@: /User/id) {
@@ -24,7 +28,7 @@ const design = `
         }
     }
     User[](id:![110,330..990]):OtherUser{
-        id { &:![110,330..990] }
+        id { &:![110,330..990] },
         name,
         age,
     }
@@ -32,7 +36,7 @@ const design = `
         name:HaveJ,
         #或者 name:HaveJ { &: /^J/ } 
     }
-    User(desc:"还是你",~desc:"keyword"):SpecialUser{
+    User(desc:"还是你",desc:~"keyword"):SpecialUser{
         desc { &:~keyword } | String,
         [Message],                        #重名并不属于数据库
         Message(userId@:/id):UserMessage {
@@ -41,7 +45,7 @@ const design = `
     }
     User(id:1){
         #当info为json时候
-        info:infoJson { address | String, position | String.Split(,) } | Json 
+        info:infoJson { address | String, position | String.Split(,) } | Json ,
         #最顶层
         Message[](userId@:LikeUser/id) {
         }
@@ -68,7 +72,7 @@ const test_01 = {
         body: [{
             type: CONSTANT.FIELD_ENITY,
             name: "User",
-            selections: [{
+            [CONSTANT.SELECTIONS]: [{
                 type: CONSTANT.FIELD_COLUMN,
                 name: "id"
             }, {
@@ -76,6 +80,63 @@ const test_01 = {
                 name: "name"
             }]
         }]
+    },
+    newAst: {
+        type: CONSTANT.PROGRAM,
+        body: [{
+            type: CONSTANT.QUERY_DEFINITION,
+            expression: {
+                type: CONSTANT.FIELD,
+                queryType: {
+                    type: CONSTANT.FIELD_ENITY,
+                    name: 'User'
+                },
+                [CONSTANT.SELECTIONS]: [{
+                    type: CONSTANT.FIELD_COLUMN,
+                    value: 'id'
+                }, {
+                    type: CONSTANT.FIELD_COLUMN,
+                    value: 'name'
+                }],
+                arguments: []
+            }
+        }]
+    },
+    run: [
+        {
+            func: async () => await getRepository("User").findOne(),
+            entity: "User",
+            alias: "User",
+            columns: ["id", "name"],
+            // filter: [
+            //     {
+            //         columns: "name",
+            //         func: data => data.split('')
+            //     }
+            // ],
+            // children: [{
+            //     func: async () => await getRepository("User").findOne(),
+            //     entity: "User",
+            //     alias: "User",
+            //     columns: ["id", "name"],
+            //     filter: [
+            //         {
+            //             columns: "name",
+            //             func: data => data.split('')
+            //         }
+            //     ],
+            // }]
+        }
+    ],
+    output: {
+        User: {
+            id: 1,
+            name: "username",
+            User: {
+                id: 1,
+                name: "username"
+            }
+        }
     }
 }
 
