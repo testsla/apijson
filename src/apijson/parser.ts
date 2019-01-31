@@ -28,25 +28,32 @@ export function parser(tokens: Array<Token>) {
 
     // 接下来我们检查是不是 EnityField 类型，我们从左圆括号开始。
     if (token.type == CONSTANT.LETTER) {
+      // 这里头字母大写就表示要查询该名字的表
       if(REGULAR.isEnityField.test(token.value)){
+        // 创建一个Field 的根节点
         let node = {
           type: CONSTANT.FIELD_ENITY,
           name: token.value,
-          selections: [],
+          [CONSTANT.SELECTIONS]: [],
         }
+        // 跳过 Field 节点
         token = tokens[++current];
+        // 我们从 { 开始，获取 Field 节点下的属性
         if (token.type == CONSTANT.SYMBOL_BRACES_FRONT) {
-          // token = tokens[++current];
+          // 直到 } 结束
           while (token.type !== CONSTANT.SYMBOL_BRACES_REAR) {
+            // 跳过 { 括号 和 每次循环
             token = tokens[++current];
+            // 判断是不是Enity下的column
             if (token.type == CONSTANT.LETTER) {
-              node.selections.push({
+              node[CONSTANT.SELECTIONS].push({
                 type: CONSTANT.FIELD_COLUMN,
                 name: token.value
               })
             }
           }
         }
+        // 我们最后一次增加 `current`，跳过右大括号。
         current++;
         return node
       }

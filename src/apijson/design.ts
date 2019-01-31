@@ -106,7 +106,7 @@ const test_01 = {
         {
             func: async () => await getRepository("User").findOne(),
             entity: "User",
-            alias: "User",
+            // alias: "User",
             columns: ["id", "name"],
             // filter: [
             //     {
