@@ -6,6 +6,7 @@
    "password": "root",
    "database": "test",
    "logging": false,
+   "synchronize": true,
    "entities": [
       "src/entity/*.ts"
    ],
